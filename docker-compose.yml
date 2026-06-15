@@ -1,0 +1,101 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hanul_pacs}
+      POSTGRES_USER: ${POSTGRES_USER:-hanul}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hanul}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  orthanc:
+    image: orthancteam/orthanc:latest
+    environment:
+      ORTHANC__NAME: HanulDemoOrthanc
+      ORTHANC__AUTHENTICATION_ENABLED: "true"
+      ORTHANC__REGISTERED_USERS: '{"orthanc":"orthanc"}'
+      ORTHANC__DICOM_WEB__ENABLE: "true"
+      ORTHANC__DICOM_WEB__ROOT: "/dicom-web/"
+      ORTHANC__DICOM_WEB__ENABLE_WADO: "true"
+      ORTHANC__DICOM_WEB__WADO_ROOT: "/wado"
+      ORTHANC__DICOM_WEB__STUDIES_METADATA: "Full"
+    ports:
+      - "8042:8042"
+      - "4242:4242"
+    volumes:
+      - orthanc-data:/var/lib/orthanc/db
+
+  ai-service:
+    build:
+      context: ./ai-service
+    environment:
+      MODEL_PATH: /app/models/chest_demo.onnx
+      AI_PROVIDER: ${AI_PROVIDER:-DEMO_FALLBACK}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-5}
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-https://api.anthropic.com}
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      SERVER_PORT: 8080
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-hanul_pacs}
+      POSTGRES_USER: ${POSTGRES_USER:-hanul}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hanul}
+      ORTHANC_BASE_URL: ${ORTHANC_BASE_URL:-http://orthanc:8042}
+      ORTHANC_DICOMWEB_URL: ${ORTHANC_DICOMWEB_URL:-http://orthanc:8042/dicom-web}
+      ORTHANC_USERNAME: ${ORTHANC_USERNAME:-orthanc}
+      ORTHANC_PASSWORD: ${ORTHANC_PASSWORD:-orthanc}
+      AI_SERVICE_URL: ${AI_SERVICE_URL:-http://ai-service:8000}
+      APP_CORS_ALLOWED_ORIGINS: http://localhost:3000
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ai-service:
+        condition: service_healthy
+      orthanc:
+        condition: service_started
+
+  web:
+    build:
+      context: ./web
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080}
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  seed-dicoms:
+    build:
+      context: ./tools/seed-dicoms
+    environment:
+      ORTHANC_BASE_URL: http://orthanc:8042
+      ORTHANC_USERNAME: ${ORTHANC_USERNAME:-orthanc}
+      ORTHANC_PASSWORD: ${ORTHANC_PASSWORD:-orthanc}
+    depends_on:
+      - orthanc
+    restart: "no"
+
+volumes:
+  postgres-data:
+  orthanc-data:
