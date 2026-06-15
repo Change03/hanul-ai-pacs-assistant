@@ -16,10 +16,10 @@
 - Playwright verifies the login shell and route loading.
 - When the backend is available, Playwright also logs in with `demo/demo` and navigates core pages.
 
-## Synthetic Dataset
+## Bundled Sample Dataset
 
 - The seed tool generates valid uploadable cases and local-only negative cases.
-- `manifest.json` records expected QC status and expected demo AI behavior.
+- `manifest.json` records the bundled anonymized CR/CT samples, expected QC status, and expected demo AI behavior.
 
 ## QC Negative Cases
 

@@ -38,7 +38,7 @@ bash scripts/smoke-test.sh
    The judge should see a local demo dashboard with service health and recent audit events.
 
 2. Open `검사 목록`.
-   Explain that the studies are synthetic DICOM objects seeded into Orthanc and queried through DICOMweb.
+   Explain that the studies are anonymized sample DICOM objects seeded into Orthanc and queried through DICOMweb.
 
 3. Open a seeded study.
    Show the original DICOM preview, WL/WW controls, metadata table, and UID copy buttons. Mention that this is a demo preview renderer, not a diagnostic viewer.

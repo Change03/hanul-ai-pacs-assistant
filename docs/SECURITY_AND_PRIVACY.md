@@ -24,7 +24,7 @@ Seeded `demo` 사용자는 `RADIOLOGIST_DEMO` role을 사용합니다.
 ## 개인정보 보호 제어
 
 - 실제 환자 데이터는 포함하지 않습니다.
-- Seeded DICOM 파일은 `ANON001`, `ANON^DEMO001`, synthetic metadata를 사용합니다.
+- Seeded DICOM 파일은 `ANON101`/`ANON102` 환자 ID와 `ANON^..._DEMO` 형식의 익명화 metadata를 사용합니다.
 - QC check는 익명화되지 않은 `PatientID` 값을 차단합니다.
 - AI 결과 화면에는 `Demo only. Not for clinical use. No real patient data.` 문구가 표시됩니다.
 - Audit log는 접근과 처리 이벤트를 기록합니다.

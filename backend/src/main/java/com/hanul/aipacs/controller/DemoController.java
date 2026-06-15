@@ -13,45 +13,42 @@ public class DemoController {
     @GetMapping("/manifest")
     public Map<String, Object> manifest() {
         return Map.of(
-            "datasetVersion", "2026.06.demo.v2",
+            "datasetVersion", "2026.06.user-provided.v1",
             "generatedAt", Instant.now().toString(),
-            "policy", "Only upload=true cases are uploaded to Orthanc by default. Negative cases stay local for QC demos.",
+            "policy", "Only bundled anonymized user-provided DICOM files are uploaded. Synthetic image samples are no longer generated.",
             "cases", List.of(
-                valid("ANON001_normal_like", "normal_like", "ANON001", "PASS", "No acute finding demo", "LOW_DEMO"),
-                valid("ANON002_bright_opacity_demo", "bright_opacity_demo", "ANON002", "PASS", "Opacity demo", "HIGH_DEMO"),
-                valid("ANON003_low_contrast", "low_contrast", "ANON003", "PASS", "Low confidence demo", "LOW_DEMO"),
-                valid("ANON004_missing_optional_tag", "missing_optional_tag", "ANON004", "WARN", "No acute finding demo", "LOW_DEMO"),
-                valid("ANON005_normal_followup", "normal_like", "ANON005", "PASS", "No acute finding demo", "LOW_DEMO"),
-                localOnly("NEG001_phi_like_negative_case", "phi_like_negative_case", "REAL123", "FAIL", "PHI-like identifiers are intentionally local-only."),
-                localOnly("NEG002_missing_pixeldata_negative_case", "missing_pixeldata_negative_case", "ANON901", "FAIL", "PixelData is intentionally omitted."),
-                localOnly("NEG003_corrupted_invalid_file", "corrupted_invalid_file", "", "FAIL", "This file is intentionally not a DICOM object.")
+                sample("CR_breast_001", "breast_cr", "ANON101", "BREAST CR DEMO", "RCC", "CR", "Breast CR demo image"),
+                sample("CR_breast_002", "breast_cr", "ANON101", "BREAST CR DEMO", "RMLO", "CR", "Breast CR demo image"),
+                sample("CT_brain_001", "brain_ct", "ANON102", "BRAIN CT DEMO", "Brain pre  4.8  H31s", "CT", "Brain CT demo image"),
+                sample("CT_brain_002", "brain_ct", "ANON102", "BRAIN CT DEMO", "Brain pre  4.8  H31s", "CT", "Brain CT demo image"),
+                sample("CT_brain_003", "brain_ct", "ANON102", "BRAIN CT DEMO", "Brain pre  4.8  H31s", "CT", "Brain CT demo image"),
+                sample("CT_brain_004", "brain_ct", "ANON102", "BRAIN CT DEMO", "Brain pre  4.8  H31s", "CT", "Brain CT demo image"),
+                sample("CT_brain_implicit", "brain_ct", "ANON102", "BRAIN CT DEMO", "Brain pre  4.8  H31s", "CT", "Brain CT demo image")
             )
         );
     }
 
-    private static Map<String, Object> valid(String caseId, String caseType, String patientId, String qc, String finding, String risk) {
-        return Map.of(
-            "caseId", caseId,
-            "caseType", caseType,
-            "patientId", patientId,
-            "expectedQcStatus", qc,
-            "expectedAiFinding", finding,
-            "expectedRiskBand", risk,
-            "upload", true,
-            "notes", "Seeded synthetic DICOM available in Orthanc."
-        );
-    }
-
-    private static Map<String, Object> localOnly(String caseId, String caseType, String patientId, String qc, String notes) {
-        return Map.of(
-            "caseId", caseId,
-            "caseType", caseType,
-            "patientId", patientId,
-            "expectedQcStatus", qc,
-            "expectedAiFinding", "BLOCKED_BY_QC",
-            "expectedRiskBand", "N/A",
-            "upload", false,
-            "notes", notes
+    private static Map<String, Object> sample(
+        String caseId,
+        String caseType,
+        String patientId,
+        String studyDescription,
+        String seriesDescription,
+        String modality,
+        String finding
+    ) {
+        return Map.ofEntries(
+            Map.entry("caseId", caseId),
+            Map.entry("caseType", caseType),
+            Map.entry("patientId", patientId),
+            Map.entry("studyDescription", studyDescription),
+            Map.entry("seriesDescription", seriesDescription),
+            Map.entry("modality", modality),
+            Map.entry("expectedQcStatus", "PASS"),
+            Map.entry("expectedAiFinding", finding),
+            Map.entry("expectedRiskBand", "DEMO_ONLY"),
+            Map.entry("upload", true),
+            Map.entry("notes", "Anonymized user-provided DICOM bundled with the repository.")
         );
     }
 }

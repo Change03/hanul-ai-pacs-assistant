@@ -96,7 +96,7 @@ public final class DicomLiteParser {
             "00280301",
             "00204000"
         )) {
-            values.putIfAbsent(tag, findTextValue(bytes, tag));
+            values.putIfAbsent(tag, findFallbackValue(bytes, tag));
         }
         pixelData = pixelData || containsTag(bytes, 0x7FE0, 0x0010);
         return new ParsedDicom(hasPreamble, values, pixelData, pixelDataLength, privateTagCount, bytes.length);
@@ -126,7 +126,7 @@ public final class DicomLiteParser {
         return findSequence(bytes, needle, 0) >= 0;
     }
 
-    private static String findTextValue(byte[] bytes, String tag) {
+    private static String findFallbackValue(byte[] bytes, String tag) {
         // QC 화면에 보여줄 핵심 텍스트 태그만 복구하기 위한 fallback 검색이다.
         int group = Integer.parseInt(tag.substring(0, 4), 16);
         int element = Integer.parseInt(tag.substring(4), 16);
@@ -144,6 +144,9 @@ public final class DicomLiteParser {
                 ? LONG_VR.contains(vr) ? uint(bytes, found + 8) : ushort(bytes, found + 6)
                 : uint(bytes, found + 4);
             long valueStart = found + (long) headerLength;
+            if (explicitVr && "US".equals(vr) && length >= 2 && valueStart + 2 <= bytes.length && isUsefulUnsignedShort(tag)) {
+                return String.valueOf(ushort(bytes, (int) valueStart));
+            }
             if (length > 0 && length < 1024 && valueStart + length <= bytes.length) {
                 String value = new String(bytes, (int) valueStart, (int) length, StandardCharsets.ISO_8859_1)
                     .replace("\0", "")

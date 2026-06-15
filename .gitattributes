@@ -13,5 +13,6 @@
 *.tsx text eol=lf
 *.yml text eol=lf
 *.yaml text eol=lf
+*.dcm binary
 Dockerfile text eol=lf
 Makefile text eol=lf

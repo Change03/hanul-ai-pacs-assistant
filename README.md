@@ -1,13 +1,13 @@
 # Hanul AI-PACS Assistant
 
-합성 DICOM 검사 데이터를 조회하고, AI 추론 전에 QC 게이트를 통과시키며, 데모 AI 결과를 새 DICOM 객체로 생성해 Orthanc PACS에 다시 저장하는 미니 PACS 데모 프로젝트입니다.
+저장소에 포함된 익명화 DICOM 검사 데이터를 조회하고, AI 추론 전에 QC 게이트를 통과시키며, 데모 AI 결과를 새 DICOM 객체로 생성해 Orthanc PACS에 다시 저장하는 미니 PACS 데모 프로젝트입니다.
 
 이 프로젝트는 병원용 실서비스가 아니라 포트폴리오/심사용 로컬 데모입니다. 실제 환자 데이터는 포함하지 않으며, AI 결과는 임상 진단이나 치료 판단에 사용할 수 없습니다.
 
 ## Competition Demo in 3 Minutes
 
 1. Login with demo/demo
-2. Open seeded synthetic study
+2. Open seeded anonymized sample study
 3. Run QC Gate
 4. Run AI Analysis
 5. View original image, overlay, heatmap, score, generated DICOM UID
@@ -23,13 +23,13 @@
 - It generates a new Secondary Capture DICOM result object.
 - It stores the generated result back to Orthanc through STOW-RS.
 - It records audit logs.
-- It is fully synthetic and demo-only.
+- It uses anonymized demo-only sample DICOM files.
 
 ## Supported demo scope
 
 This is not a full hospital PACS and not a full DICOM parser. The demo scope is intentionally narrow and honest:
 
-- synthetic data only
+- anonymized demo sample data only
 - single-frame grayscale demo DICOM input
 - uncompressed Explicit VR Little Endian preferred
 - unsupported Transfer Syntax is rejected gracefully by QC
@@ -41,7 +41,7 @@ Unsupported production scenarios include real patient data, compressed transfer 
 
 Hanul AI-PACS Assistant는 DICOMweb 기반 영상 워크플로를 end-to-end로 보여줍니다.
 
-1. Orthanc에 저장된 합성 DICOM study/series/instance를 조회합니다.
+1. Orthanc에 저장된 익명화 샘플 DICOM study/series/instance를 조회합니다.
 2. 선택한 DICOM 인스턴스를 PNG로 렌더링해 웹에서 미리 봅니다.
 3. DICOM UID, Transfer Syntax, PixelData, 익명화 패턴, PHI 의심 문자열을 QC로 검사합니다.
 4. QC가 `FAIL`이면 AI 추론을 차단합니다.
@@ -58,7 +58,7 @@ Hanul AI-PACS Assistant는 DICOMweb 기반 영상 워크플로를 end-to-end로 
 
 - Docker Compose 기반 로컬 실행 환경
 - Orthanc DICOMweb 서버와 `/dicom-web` 루트 구성
-- 합성 흉부 X-ray 스타일 DICOM seed 데이터 생성/업로드 도구
+- 익명화 유방 CR/뇌 CT DICOM seed 데이터 복사/업로드 도구
 - Spring Boot 게이트웨이
   - 세션 기반 데모 로그인: `demo/demo`
   - DICOM study/series/instance 조회
@@ -123,7 +123,7 @@ flowchart LR
 ├─ backend/             # Spring Boot 3.3 게이트웨이/API 서버
 ├─ ai-service/          # FastAPI DICOM 렌더링/AI 추론 서비스
 ├─ orthanc/             # Orthanc 관련 문서
-├─ tools/seed-dicoms/   # 합성 DICOM 생성 및 STOW-RS seed 도구
+├─ tools/seed-dicoms/   # 샘플 DICOM 복사 및 STOW-RS seed 도구
 ├─ docs/                # API, DICOM flow, AI pipeline, QC 문서
 ├─ scripts/             # smoke test 스크립트
 ├─ docker-compose.yml
@@ -155,7 +155,9 @@ docker compose up --build
 - Orthanc username: `orthanc`
 - Orthanc password: `orthanc`
 
-`seed-dicoms` 서비스는 Compose 실행 시 합성 DICOM 데이터를 생성해 Orthanc에 업로드합니다. 데이터를 수동으로 다시 넣고 싶으면 다음을 실행합니다.
+`seed-dicoms` 서비스는 Compose 실행 시 `tools/seed-dicoms/samples/user-provided`에 포함된 익명화 DICOM만 Orthanc에 업로드합니다. Docker Compose로 실행할 때는 기존 Orthanc study를 지우고 이 샘플만 다시 넣으므로 화면에 다른 샘플 이미지가 남지 않습니다.
+
+데이터를 수동으로 다시 넣고 싶으면 다음을 실행합니다.
 
 ```bash
 make seed
@@ -183,9 +185,9 @@ AI_PROVIDER=DEMO_FALLBACK
 
 실험적 provider:
 
-- `ANTHROPIC`: 렌더링된 synthetic PNG를 Anthropic API로 보내 데모 라벨/점수 생성
+- `ANTHROPIC`: 렌더링된 데모 PNG를 Anthropic API로 보내 데모 라벨/점수 생성
 
-`ANTHROPIC`은 기본 비활성화 상태이며, 심사에 필요하지 않습니다. synthetic data 전용 실험 옵션이고 실제 환자 데이터에는 사용하지 마세요. 키를 쓰는 경우 `.env`에만 넣고 커밋하지 마세요.
+`ANTHROPIC`은 기본 비활성화 상태이며, 심사에 필요하지 않습니다. 데모 데이터 전용 실험 옵션이고 실제 환자 데이터에는 사용하지 마세요. 키를 쓰는 경우 `.env`에만 넣고 커밋하지 마세요.
 
 ```bash
 AI_PROVIDER=ANTHROPIC
@@ -196,7 +198,7 @@ ANTHROPIC_MODEL=claude-sonnet-4-5
 ## 데모 진행 순서
 
 1. http://localhost:3000 에서 `demo/demo`으로 로그인합니다.
-2. `검사 목록`에서 합성 DICOM 검사를 선택합니다.
+2. `검사 목록`에서 샘플 DICOM 검사를 선택합니다.
 3. DICOM 미리보기, WL/WW preset, 핵심 메타데이터, UID 복사를 확인합니다.
 4. `QC 실행`으로 PASS/WARN/FAIL 리포트를 확인합니다.
 5. `AI 분석 실행`으로 비동기 AI job을 생성합니다.
@@ -254,7 +256,7 @@ cd web && npm test
 make smoke
 ```
 
-`make smoke`는 backend, ai-service, Orthanc가 실행 중이고 합성 DICOM 데이터가 시드되어 있다고 가정합니다.
+`make smoke`는 backend, ai-service, Orthanc가 실행 중이고 샘플 DICOM 데이터가 시드되어 있다고 가정합니다.
 
 성공 예시:
 
@@ -309,6 +311,6 @@ Smoke test passed: health, seeded study, QC, AI, STOW-RS, read-back, artifacts, 
 - Orthanc 연결 실패: `docker compose logs orthanc`를 확인합니다.
 - AI job이 `BLOCKED_BY_QC`: QC 리포트를 확인합니다. `FAIL`이면 설계상 추론이 차단됩니다.
 - AI job이 `COMPLETED_UNVERIFIED`: STOW는 성공했지만 Orthanc read-back 검증이 실패했습니다. Orthanc 로그와 생성 UID를 확인하세요.
-- 미리보기 실패: seed tool로 만든 uncompressed Explicit VR Little Endian DICOM인지 확인합니다.
+- 미리보기 실패: seed tool에 포함된 uncompressed Explicit VR Little Endian DICOM인지 확인합니다.
 - 로그인 문제: 로그아웃 후 `demo/demo`으로 다시 로그인합니다.
 - Anthropic provider 실패: `.env`의 `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`, 네트워크 접근 가능 여부를 확인합니다.

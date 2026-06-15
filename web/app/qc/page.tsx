@@ -146,8 +146,8 @@ export default function QcPage() {
           <Card>
             <div className="mb-3 text-sm font-medium">데모 QC 케이스</div>
             <div className="grid gap-2">
-              <button onClick={() => validateStudyByPatientId("ANON001")} className="rounded-md border border-line px-3 py-2 text-left text-sm hover:bg-slate-800">Run PASS case</button>
-              <button onClick={() => validateStudyByPatientId("ANON004")} className="rounded-md border border-line px-3 py-2 text-left text-sm hover:bg-slate-800">Run WARN case</button>
+              <button onClick={() => validateStudyByPatientId("ANON101")} className="rounded-md border border-line px-3 py-2 text-left text-sm hover:bg-slate-800">Run breast CR sample</button>
+              <button onClick={() => validateStudyByPatientId("ANON102")} className="rounded-md border border-line px-3 py-2 text-left text-sm hover:bg-slate-800">Run brain CT sample</button>
               <button onClick={() => validateBytes("NEG001_phi_like_negative_case.dcm", demoDicomBytes({ patientId: "REAL123", patientName: "JOHN^SMITH", includePixelData: true }))} className="rounded-md border border-line px-3 py-2 text-left text-sm hover:bg-slate-800">Run FAIL PHI-like case</button>
               <button onClick={() => validateBytes("NEG003_corrupted_invalid_file.dcm", new TextEncoder().encode("This is intentionally not a DICOM file."))} className="rounded-md border border-line px-3 py-2 text-left text-sm hover:bg-slate-800">Run FAIL corrupted file case</button>
               <button onClick={() => validateBytes("NEG002_missing_pixeldata_negative_case.dcm", demoDicomBytes({ patientId: "ANON901", patientName: "ANON^DEMO901", includePixelData: false }))} className="rounded-md border border-line px-3 py-2 text-left text-sm hover:bg-slate-800">Run FAIL missing PixelData case</button>
@@ -162,7 +162,7 @@ export default function QcPage() {
 
           {manifest && (
             <Card>
-              <div className="mb-3 text-sm font-medium">Synthetic dataset manifest</div>
+              <div className="mb-3 text-sm font-medium">Bundled DICOM manifest</div>
               <div className="text-xs text-slate-500">Version {manifest.datasetVersion}</div>
               <div className="mt-3 max-h-56 space-y-2 overflow-auto text-xs">
                 {manifest.cases.map((item) => (
