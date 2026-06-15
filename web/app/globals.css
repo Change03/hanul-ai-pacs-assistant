@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #08111f;
+  color: #e5edf8;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.medical-card {
+  border: 1px solid #263247;
+  background: #101827;
+  border-radius: 8px;
+}
+
+.status-pill {
+  border-radius: 999px;
+  border: 1px solid #314057;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  white-space: nowrap;
+}
