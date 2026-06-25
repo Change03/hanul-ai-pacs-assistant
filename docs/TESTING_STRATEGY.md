@@ -8,7 +8,7 @@
 
 ## AI Service
 
-- pytest covers the FastAPI service and DICOM processing behavior.
+- JUnit covers the Spring Boot AI service and DICOM processing behavior.
 - DEMO_FALLBACK is deterministic so tests do not require external models or paid APIs.
 
 ## Frontend

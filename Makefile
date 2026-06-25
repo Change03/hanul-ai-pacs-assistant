@@ -10,7 +10,7 @@ seed:
 	docker compose run --rm seed-dicoms
 
 test:
-	docker run --rm -v "$$(pwd)/ai-service:/app" -w /app -e PYTHONPATH=/app python:3.12-slim sh -c "pip install -r requirements.txt && pytest"
+	docker run --rm -v "$$(pwd)/ai-service:/workspace" -w /workspace gradle:8.10-jdk21 gradle test --no-daemon
 	docker run --rm -v "$$(pwd)/backend:/workspace" -w /workspace gradle:8.10-jdk21 gradle test --no-daemon
 	cd web && npm install && npm run build && npm test
 

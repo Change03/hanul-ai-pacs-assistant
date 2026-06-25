@@ -45,7 +45,7 @@ Hanul AI-PACS Assistant는 DICOMweb 기반 영상 워크플로를 end-to-end로 
 2. 선택한 DICOM 인스턴스를 PNG로 렌더링해 웹에서 미리 봅니다.
 3. DICOM UID, Transfer Syntax, PixelData, 익명화 패턴, PHI 의심 문자열을 QC로 검사합니다.
 4. QC가 `FAIL`이면 AI 추론을 차단합니다.
-5. QC가 `PASS` 또는 `WARN`이면 FastAPI AI 서비스가 데모 추론을 실행합니다.
+5. QC가 `PASS` 또는 `WARN`이면 Spring Boot AI 서비스가 데모 추론을 실행합니다.
 6. overlay, heatmap, score, bounding box, 결과 JSON을 생성합니다.
 7. overlay 이미지를 담은 Secondary Capture DICOM을 생성합니다.
 8. 생성된 DICOM을 Spring Boot 게이트웨이가 PostgreSQL artifact로 저장하고 Orthanc에 STOW-RS로 업로드합니다.
@@ -71,7 +71,7 @@ Hanul AI-PACS Assistant는 DICOMweb 기반 영상 워크플로를 end-to-end로 
   - STOW 후 Orthanc read-back 검증
   - 감사 로그와 런타임 아키텍처 API
   - Swagger UI
-- FastAPI AI 서비스
+- Spring Boot AI 서비스
   - DICOM 렌더링
   - WL/WW preset 전처리: `chest`, `lung`, `bone`, `auto`
   - 결정론적 `DEMO_FALLBACK` 추론
@@ -89,7 +89,7 @@ Hanul AI-PACS Assistant는 DICOMweb 기반 영상 워크플로를 end-to-end로 
   - Mermaid 아키텍처 화면
 - 테스트/검증
   - backend JUnit 테스트
-  - ai-service pytest
+  - ai-service JUnit
   - web Playwright smoke test
   - 전체 서비스 smoke script
 
@@ -108,7 +108,7 @@ Hanul AI-PACS Assistant는 DICOMweb 기반 영상 워크플로를 end-to-end로 
 flowchart LR
   Web[Next.js Web] --> Gateway[Spring Boot Gateway]
   Gateway --> Orthanc[Orthanc DICOMweb]
-  Gateway --> AI[FastAPI AI Service]
+  Gateway --> AI[Spring Boot AI Service]
   AI --> Result[Generated Secondary Capture DICOM]
   Result --> Gateway
   Gateway -->|STOW-RS| Orthanc
@@ -121,7 +121,7 @@ flowchart LR
 .
 ├─ web/                 # Next.js 16, React 19, Tailwind 웹 UI
 ├─ backend/             # Spring Boot 3.3 게이트웨이/API 서버
-├─ ai-service/          # FastAPI DICOM 렌더링/AI 추론 서비스
+├─ ai-service/          # Spring Boot DICOM 렌더링/AI 추론 서비스
 ├─ orthanc/             # Orthanc 관련 문서
 ├─ tools/seed-dicoms/   # 샘플 DICOM 복사 및 STOW-RS seed 도구
 ├─ docs/                # API, DICOM flow, AI pipeline, QC 문서
@@ -245,7 +245,7 @@ Base URL: `http://localhost:8080`
 개별 테스트:
 
 ```bash
-cd ai-service && python -m pytest
+cd ai-service && gradle test
 cd backend && gradle test
 cd web && npm test
 ```
