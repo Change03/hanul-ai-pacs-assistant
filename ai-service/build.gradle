@@ -23,7 +23,6 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'org.dcm4che:dcm4che-core:5.29.2'
     implementation 'com.microsoft.onnxruntime:onnxruntime:1.20.0'
 
