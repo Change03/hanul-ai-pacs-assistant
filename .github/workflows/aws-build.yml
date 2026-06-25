@@ -23,6 +23,10 @@ concurrency:
   group: aws-build-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  AWS_REGION: ap-northeast-2
+  IMAGE_REPOSITORY_PREFIX: hanul-ai-pacs-assistant
+
 jobs:
   docker-image-build:
     runs-on: ubuntu-latest
@@ -33,15 +37,15 @@ jobs:
           - service: backend
             context: ./backend
             dockerfile: ./backend/Dockerfile
-            image: hanul-ai-pacs-assistant/backend
+            repository: backend
           - service: ai-service
             context: ./ai-service
             dockerfile: ./ai-service/Dockerfile
-            image: hanul-ai-pacs-assistant/ai-service
+            repository: ai-service
           - service: web
             context: ./web
             dockerfile: ./web/Dockerfile
-            image: hanul-ai-pacs-assistant/web
+            repository: web
             build-args: |
               NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
 
@@ -55,7 +59,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ matrix.image }}
+          images: ${{ env.IMAGE_REPOSITORY_PREFIX }}-${{ matrix.repository }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
