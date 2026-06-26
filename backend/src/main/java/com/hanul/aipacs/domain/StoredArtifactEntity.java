@@ -5,20 +5,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "stored_artifacts")
 public class StoredArtifactEntity {
     @Id
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(length = 36)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_id", nullable = false)
+    @JoinColumn(name = "job_id", nullable = false, columnDefinition = "CHAR(36)")
     private AiJobEntity job;
 
     @Column(name = "artifact_type", nullable = false)
@@ -27,7 +32,8 @@ public class StoredArtifactEntity {
     @Column(name = "content_type", nullable = false)
     private String contentType;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGBLOB")
     private byte[] bytes;
 
     @Column(name = "created_at", nullable = false)

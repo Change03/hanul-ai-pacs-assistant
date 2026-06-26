@@ -48,7 +48,7 @@ Hanul AI-PACS Assistant는 DICOMweb 기반 영상 워크플로를 end-to-end로 
 5. QC가 `PASS` 또는 `WARN`이면 Spring Boot AI 서비스가 데모 추론을 실행합니다.
 6. overlay, heatmap, score, bounding box, 결과 JSON을 생성합니다.
 7. overlay 이미지를 담은 Secondary Capture DICOM을 생성합니다.
-8. 생성된 DICOM을 Spring Boot 게이트웨이가 PostgreSQL artifact로 저장하고 Orthanc에 STOW-RS로 업로드합니다.
+8. 생성된 DICOM을 Spring Boot 게이트웨이가 MySQL artifact로 저장하고 Orthanc에 STOW-RS로 업로드합니다.
 9. STOW-RS 업로드 후 Orthanc read-back 검증으로 결과 DICOM 존재 여부를 확인합니다.
 10. DICOM 조회, QC, AI 작업, STOW 업로드, read-back 검증 기록을 감사 로그와 AI job timeline으로 남깁니다.
 
@@ -112,7 +112,7 @@ flowchart LR
   AI --> Result[Generated Secondary Capture DICOM]
   Result --> Gateway
   Gateway -->|STOW-RS| Orthanc
-  Gateway --> Postgres[(PostgreSQL)]
+  Gateway --> Mysql[(MySQL)]
 ```
 
 ## 프로젝트 구조
@@ -303,7 +303,7 @@ Smoke test passed: health, seeded study, QC, AI, STOW-RS, read-back, artifacts, 
 - Java QC parser는 게이트웨이에서 빠르게 검증할 수 있는 explicit VR 중심의 경량 parser입니다.
 - AI job은 비동기로 실행되고 웹 UI는 job 상태를 polling합니다.
 - AI job은 timeline 이벤트를 저장하며, STOW-RS 이후 Orthanc read-back 검증이 성공하면 `COMPLETED_VERIFIED`가 됩니다.
-- 결과 overlay, heatmap, result DICOM은 데모를 단순화하기 위해 PostgreSQL `stored_artifacts`에 저장합니다.
+- 결과 overlay, heatmap, result DICOM은 데모를 단순화하기 위해 MySQL `stored_artifacts`에 저장합니다.
 
 ## 문제 해결
 

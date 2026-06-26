@@ -41,7 +41,7 @@ public class DashboardService {
         } catch (Exception e) {
             health.put("aiService", "DOWN");
         }
-        health.put("postgres", "UP");
+        health.put("mysql", "UP");
         return health;
     }
 

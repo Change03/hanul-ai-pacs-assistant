@@ -25,7 +25,7 @@ const healthLabels: Record<string, string> = {
   orthanc: "Orthanc PACS",
   ai: "AI 서비스",
   aiService: "AI 서비스",
-  postgres: "PostgreSQL"
+  mysql: "MySQL"
 };
 
 const auditActionLabels: Record<string, string> = {
@@ -62,7 +62,7 @@ export default function DashboardPage() {
   }, []);
 
   if (error) return <StateMessage type="error" title="대시보드를 불러오지 못했습니다" detail={error} />;
-  if (!data) return <StateMessage type="loading" title="대시보드를 불러오는 중" detail="Orthanc, AI 서비스, PostgreSQL, 최근 감사 이벤트를 확인하고 있습니다." />;
+  if (!data) return <StateMessage type="loading" title="대시보드를 불러오는 중" detail="Orthanc, AI 서비스, MySQL, 최근 감사 이벤트를 확인하고 있습니다." />;
 
   return (
     <>

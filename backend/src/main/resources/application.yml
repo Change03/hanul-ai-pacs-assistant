@@ -9,9 +9,10 @@ spring:
   application:
     name: hanul-ai-pacs-backend
   datasource:
-    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/hanul_pacs}
-    username: ${POSTGRES_USER:hanul}
-    password: ${POSTGRES_PASSWORD:hanul}
+    url: ${DB_URL:jdbc:mysql://localhost:3306/hanul_pacs?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DB_USER:hanul}
+    password: ${DB_PASSWORD:hanul}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   flyway:
     enabled: true
   jpa:
