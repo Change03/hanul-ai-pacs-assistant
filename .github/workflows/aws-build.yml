@@ -58,10 +58,30 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.service }}
           cache-to: type=gha,mode=max,scope=${{ matrix.service }}
 
+  deploy-ready:
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - name: Check EC2 deploy secrets
+        id: check
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_APP_DIR: ${{ secrets.EC2_APP_DIR }}
+          EC2_ENV_FILE: ${{ secrets.EC2_ENV_FILE }}
+        run: |
+          if [ -n "$EC2_HOST" ] && [ -n "$EC2_USER" ] && [ -n "$EC2_SSH_KEY" ] && [ -n "$EC2_APP_DIR" ] && [ -n "$EC2_ENV_FILE" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
   deploy-ec2:
     runs-on: ubuntu-latest
-    needs: docker-image-build
-    if: ${{ secrets.EC2_HOST != '' && secrets.EC2_USER != '' && secrets.EC2_SSH_KEY != '' && secrets.EC2_APP_DIR != '' && secrets.EC2_ENV_FILE != '' }}
+    needs: [docker-image-build, deploy-ready]
+    if: ${{ needs.deploy-ready.outputs.ready == 'true' }}
     steps:
       - uses: actions/checkout@v4
 
