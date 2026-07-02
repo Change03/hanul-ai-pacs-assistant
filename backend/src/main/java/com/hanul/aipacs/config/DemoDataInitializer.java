@@ -1,7 +1,7 @@
 package com.hanul.aipacs.config;
 
-import com.hanul.aipacs.domain.Role;
 import com.hanul.aipacs.domain.UserEntity;
+import com.hanul.aipacs.domain.enums.Role;
 import com.hanul.aipacs.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

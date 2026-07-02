@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { BrainCircuit, ClipboardCheck, ImageIcon, RefreshCw, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { apiFetch, assetUrl, InstanceSummary, QcReport, StudySummary } from "@/lib/api";
-import { DicomCanvasViewer } from "@/components/dicom-canvas-viewer";
+import { DicomCanvasViewer } from "@/components/dicom/dicom-canvas-viewer";
 import { Card, CopyButton, Disclaimer, PageTitle, StateMessage, StatusBadge, displayStatus } from "@/components/ui";
 
 type Metadata = { tags: Record<string, any> };

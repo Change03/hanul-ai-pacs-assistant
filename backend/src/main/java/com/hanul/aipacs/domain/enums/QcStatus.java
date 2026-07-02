@@ -1,4 +1,4 @@
-package com.hanul.aipacs.domain;
+package com.hanul.aipacs.domain.enums;
 
 public enum QcStatus {
     PASS,

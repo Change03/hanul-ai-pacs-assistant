@@ -2,7 +2,7 @@ package com.hanul.aipacs.service;
 
 import com.hanul.aipacs.client.AiClient;
 import com.hanul.aipacs.client.OrthancClient;
-import com.hanul.aipacs.domain.AiJobStatus;
+import com.hanul.aipacs.domain.enums.AiJobStatus;
 import com.hanul.aipacs.dto.DashboardDto;
 import com.hanul.aipacs.repository.AiJobRepository;
 import com.hanul.aipacs.repository.QcReportRepository;

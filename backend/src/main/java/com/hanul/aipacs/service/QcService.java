@@ -2,8 +2,8 @@ package com.hanul.aipacs.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanul.aipacs.domain.QcReportEntity;
-import com.hanul.aipacs.domain.QcStatus;
-import com.hanul.aipacs.domain.Severity;
+import com.hanul.aipacs.domain.enums.QcStatus;
+import com.hanul.aipacs.domain.enums.Severity;
 import com.hanul.aipacs.dto.QcDtos.QcCheckDto;
 import com.hanul.aipacs.dto.QcDtos.QcReportDto;
 import com.hanul.aipacs.repository.QcReportRepository;

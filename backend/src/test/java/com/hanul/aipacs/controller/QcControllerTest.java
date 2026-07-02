@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.hanul.aipacs.client.OrthancClient;
-import com.hanul.aipacs.domain.QcStatus;
+import com.hanul.aipacs.domain.enums.QcStatus;
 import com.hanul.aipacs.dto.QcDtos.QcReportDto;
 import com.hanul.aipacs.service.AuditService;
 import com.hanul.aipacs.service.QcService;

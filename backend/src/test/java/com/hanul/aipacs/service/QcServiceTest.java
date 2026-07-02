@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hanul.aipacs.domain.QcStatus;
+import com.hanul.aipacs.domain.enums.QcStatus;
 import com.hanul.aipacs.dto.QcDtos.QcReportDto;
 import com.hanul.aipacs.repository.QcReportRepository;
 import java.io.ByteArrayOutputStream;

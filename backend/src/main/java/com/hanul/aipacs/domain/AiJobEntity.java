@@ -1,5 +1,6 @@
 package com.hanul.aipacs.domain;
 
+import com.hanul.aipacs.domain.enums.AiJobStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

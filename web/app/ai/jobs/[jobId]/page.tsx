@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BrainCircuit, Download, Flame, Image as ImageIcon } from "lucide-react";
 import { AiJob, ResultDicomMetadata, apiFetch, assetUrl } from "@/lib/api";
-import { DicomCanvasViewer } from "@/components/dicom-canvas-viewer";
+import { DicomCanvasViewer } from "@/components/dicom/dicom-canvas-viewer";
 import { Card, CopyButton, Disclaimer, PageTitle, StateMessage, StatusBadge, displayFindingLabel, displayStatus } from "@/components/ui";
 
 const preprocessingLabels: Record<string, string> = {
